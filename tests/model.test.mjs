@@ -1,21 +1,6 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
-import { cleanLines } from '../web/model.mjs';
-test('trims, removes blanks and preserves first-seen order', () => {
-  assert.deepEqual(cleanLines('  Halifax\nLangley\nHalifax\n\nVancouver  '), {
-    text: 'Halifax\nLangley\nVancouver', count: 3, removed: 1,
-  });
-});
-test('supports Windows and old Mac line endings', () => {
-  assert.equal(cleanLines('a\r\nb\ra').text, 'a\nb');
-});
-test('empty text and whitespace produce an empty result', () => {
-  assert.deepEqual(cleanLines(' \n\t'), { text: '', count: 0, removed: 0 });
-});
-test('preserves case and Unicode', () => {
-  assert.equal(cleanLines('Québec\nquébec\n東京\nQuébec').text, 'Québec\nquébec\n東京');
-});
-test('treats markup as ordinary text', () => {
-  assert.equal(cleanLines('<script>alert(1)</script>\n<script>alert(1)</script>').text, '<script>alert(1)</script>');
-});
-test('rejects non-text input', () => { assert.throws(() => cleanLines(null), TypeError); });
+import test from 'node:test';import assert from 'node:assert/strict';import {filterSites,compareScores,parseImport,reportCSV,csv} from '../web/model.mjs';
+const ready={state:'ready',grade:'A',score:95,algorithm_version:6,tests:[],history:[]};const sites=[{host:'coolcode.ca',name:'CoolCode',region:'Canada',group:'owned',observatory:ready,tls:{state:'permission_required',endpoints:[]}},{host:'www.canada.ca',name:'Canada',region:'Federal',group:'government',observatory:{state:'collection_paused'},tls:{state:'permission_required',endpoints:[]}}];
+test('filters combine text and coverage without treating unavailable as zero',()=>{assert.equal(filterSites(sites,'CANADA','government').length,1);assert.equal(filterSites(sites,'','available').length,1);assert.equal(filterSites(sites,'ontario').length,0);});
+test('provider algorithm changes invalidate score delta',()=>{assert.equal(compareScores({...ready,algorithm_version:4},ready).delta,null);assert.equal(compareScores({...ready,score:90},ready).delta,5);assert.equal(compareScores(null,ready).delta,null);assert.equal(compareScores({...ready,state:'provider_error'},ready).delta,null);});
+test('imports require dated provider evidence and retain hostile text as text',()=>{const source={scan:{grade:'A',score:95,algorithm_version:6,scanned_at:'2026-11-22T00:00:00Z'},tests:{csp:{title:'<img onerror=alert(1)>',pass:false,result:'csp-not-implemented'}}};const p=parseImport(source);assert.equal(p.tests[0].title,'<img onerror=alert(1)>');assert.equal(p.local_import,true);assert.throws(()=>parseImport({scan:{...source.scan,grade:'made-up'},tests:source.tests}));assert.throws(()=>parseImport({...source,tests:{}}));assert.throws(()=>parseImport({scan:{...source.scan,scanned_at:'yesterday'},tests:source.tests}));});
+test('CSV escapes quotes/newlines and formula cells, preserves gaps',()=>{assert.equal(csv([['=cmd','a"b','x\ny']]),'"\'=cmd","a""b","x\ny"\r\n');const output=reportCSV(sites,'2026-11-22T00:00:00Z');assert.match(output,/collection_paused","",""/);assert.match(output,/permission_required/);});

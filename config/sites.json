@@ -1,0 +1,12 @@
+{
+  "ssl_labs_publication_permission": null,
+  "ssl_labs_permission_note": "Qualys express permission for public-site API use and publication is required before enabling TLS collection.",
+  "sites": [
+    {"host":"coolcode.ca","name":"CoolCode","region":"Canada","group":"owned","observatory_enabled":true,"owner_permission":"Operator-owned site; assessment authorized in this project request.","ssl_labs_enabled":false,"publication_permission":null},
+    {"host":"www.canada.ca","name":"Government of Canada","region":"Federal","group":"government","observatory_enabled":false,"owner_permission":null,"ssl_labs_enabled":false,"publication_permission":null},
+    {"host":"www2.gov.bc.ca","name":"Government of British Columbia","region":"British Columbia","group":"government","observatory_enabled":false,"owner_permission":null,"ssl_labs_enabled":false,"publication_permission":null},
+    {"host":"www.ontario.ca","name":"Government of Ontario","region":"Ontario","group":"government","observatory_enabled":false,"owner_permission":null,"ssl_labs_enabled":false,"publication_permission":null},
+    {"host":"www.quebec.ca","name":"Gouvernement du Québec","region":"Quebec","group":"government","observatory_enabled":false,"owner_permission":null,"ssl_labs_enabled":false,"publication_permission":null},
+    {"host":"www.alberta.ca","name":"Government of Alberta","region":"Alberta","group":"government","observatory_enabled":false,"owner_permission":null,"ssl_labs_enabled":false,"publication_permission":null}
+  ]
+}

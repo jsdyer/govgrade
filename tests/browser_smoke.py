@@ -1,53 +1,61 @@
-"""Exercise the built starter at a project subpath in Chromium."""
+"""CI-only Chromium checks at a GitHub Pages project subpath."""
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+import json
 from pathlib import Path
 import shutil
 import tempfile
 import threading
 from playwright.sync_api import sync_playwright
-
-ROOT = Path(__file__).resolve().parents[1]
-
-
+ROOT=Path(__file__).resolve().parents[1]
 class QuietHandler(SimpleHTTPRequestHandler):
-    def log_message(self, *args):
-        pass
-
+    def log_message(self,*args): pass
 
 def main():
-    screenshots = ROOT / "browser-checks"
-    screenshots.mkdir(exist_ok=True)
-    with tempfile.TemporaryDirectory() as temporary:
-        shutil.copytree(ROOT / "dist", Path(temporary) / "example-tool")
-        server = ThreadingHTTPServer(("127.0.0.1", 0), partial(QuietHandler, directory=temporary))
-        threading.Thread(target=server.serve_forever, daemon=True).start()
+    shots=ROOT/'browser-checks';shots.mkdir(exist_ok=True)
+    with tempfile.TemporaryDirectory() as temp:
+        shutil.copytree(ROOT/'dist',Path(temp)/ROOT.name)
+        server=ThreadingHTTPServer(('127.0.0.1',0),partial(QuietHandler,directory=temp))
+        threading.Thread(target=server.serve_forever,daemon=True).start()
         try:
             with sync_playwright() as p:
-                browser = p.chromium.launch()
-                page = browser.new_page(viewport={"width": 1280, "height": 1000})
-                errors = []
-                page.on("pageerror", lambda error: errors.append(str(error)))
-                page.goto(f"http://127.0.0.1:{server.server_port}/example-tool/")
-                page.locator("#sample").click()
-                assert page.locator("#output").input_value() == "Halifax\nLangley\nVancouver"
-                assert "1 duplicate removed" in page.locator("#status").inner_text()
-                page.locator("#input").fill('<img src=x onerror="alert(1)">\n<img src=x onerror="alert(1)">')
-                assert page.locator("#output").input_value() == '<img src=x onerror="alert(1)">'
-                assert page.locator("img").count() == 0
-                page.locator("#clear").click()
-                assert page.locator("#output").input_value() == ""
-                page.locator("#sample").click()
-                page.screenshot(path=str(screenshots / "desktop.png"), full_page=True)
-                page.set_viewport_size({"width": 390, "height": 844})
-                assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth")
-                page.screenshot(path=str(screenshots / "mobile.png"), full_page=True)
-                assert not errors, errors
+                browser=p.chromium.launch()
+                page=browser.new_page(viewport={'width':1280,'height':1000})
+                errors=[];page.on('pageerror',lambda error:errors.append(str(error)))
+                page.goto(f'http://127.0.0.1:{server.server_port}/{ROOT.name}/')
+                page.locator('#edition').filter(has_text='Captured').wait_for()
+                assert page.locator('#sites button').count()==6
+                assert 'CoolCode' in page.locator('#detail').inner_text()
+                assert 'MDN Observatory' in page.locator('#detail').inner_text()
+                assert page.locator('#detail tbody tr').count()>0
+                page.locator('#sites button').filter(has_text='Government of Canada').click()
+                assert 'Collection paused' in page.locator('#detail').inner_text()
+                assert 'Permission required' in page.locator('#detail').inner_text()
+                page.locator('#search').fill('<img src=x onerror=alert(1)>')
+                assert page.locator('#sites button').count()==0
+                assert page.locator('img').count()==0
+                page.locator('#search').fill('')
+                page.locator('#coverage').select_option('available')
+                assert page.locator('#sites button').count()==1
+                with page.expect_download() as event: page.locator('#export').click()
+                assert event.value.suggested_filename=='govgrade-reports.csv'
+                page.locator('summary').filter(has_text='Compare a report').click()
+                payload={'scan':{'grade':'A','score':90,'algorithm_version':6,'scanned_at':'2026-11-22T00:00:00Z'},'tests':{'test':{'title':'<img src=x onerror=alert(1)>','pass':False,'result':'literal text'}}}
+                page.locator('#import').set_input_files({'name':'report.json','mimeType':'application/json','buffer':json.dumps(payload).encode()})
+                page.locator('#import-status').filter(has_text='Loaded into this tab').wait_for()
+                assert 'unverified' in page.locator('#import-status').inner_text()
+                assert '<img src=x' in page.locator('#detail').inner_text()
+                assert page.locator('img').count()==0
+                page.locator('#capture').dispatch_event('change')
+                page.locator('#detail tbody tr').first.wait_for()
+                page.locator('#coverage').select_option('all')
+
+                page.screenshot(path=str(shots/'desktop.png'),full_page=True)
+                page.set_viewport_size({'width':390,'height':844})
+                assert page.evaluate('document.documentElement.scrollWidth <= innerWidth'), 'Horizontal mobile overflow'
+                page.screenshot(path=str(shots/'mobile.png'),full_page=True)
+                assert not errors,errors
                 browser.close()
-            print("Browser checks passed: project subpath, sample, clear, safe text and mobile layout")
-        finally:
-            server.shutdown()
-
-
-if __name__ == "__main__":
-    main()
+        finally: server.shutdown()
+    print('Browser checks passed: subpath, real data, filters, export, safe text, desktop and mobile')
+if __name__=='__main__':main()

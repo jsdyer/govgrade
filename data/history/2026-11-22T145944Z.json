@@ -1,0 +1,234 @@
+{
+  "captured_at": "2026-11-22T14:59:44Z",
+  "schema_version": 1,
+  "sites": [
+    {
+      "group": "owned",
+      "host": "coolcode.ca",
+      "name": "CoolCode",
+      "observatory": {
+        "algorithm_version": 6,
+        "grade": "F",
+        "history": [
+          {
+            "algorithm_version": 6,
+            "grade": "F",
+            "id": 136992363,
+            "scanned_at": "2026-11-22T14:56:38.930Z",
+            "score": 10
+          }
+        ],
+        "raw_sha256": "b2d3c53c59fe855d4b9de577f5fd624fad445dc7c242cb4476a19225c2e7433f",
+        "retrieved_at": "2026-11-22T14:59:43Z",
+        "scan_id": 136992363,
+        "scanned_at": "2026-11-22T14:56:38.930Z",
+        "score": 10,
+        "state": "ready",
+        "tests": [
+          {
+            "id": "content-security-policy",
+            "pass": false,
+            "result": "csp-not-implemented",
+            "score_modifier": -25,
+            "title": "Content Security Policy (CSP)"
+          },
+          {
+            "id": "cookies",
+            "pass": null,
+            "result": "cookies-not-found",
+            "score_modifier": 0,
+            "title": "Cookies"
+          },
+          {
+            "id": "cross-origin-embedder-policy",
+            "pass": true,
+            "result": "coep-not-implemented",
+            "score_modifier": 0,
+            "title": "Cross Origin Embedder Policy"
+          },
+          {
+            "id": "cross-origin-opener-policy",
+            "pass": true,
+            "result": "coop-not-implemented",
+            "score_modifier": 0,
+            "title": "Cross Origin Opener Policy"
+          },
+          {
+            "id": "cross-origin-resource-sharing",
+            "pass": true,
+            "result": "cross-origin-resource-sharing-not-implemented",
+            "score_modifier": 0,
+            "title": "Cross Origin Resource Sharing (CORS)"
+          },
+          {
+            "id": "redirection",
+            "pass": false,
+            "result": "redirection-missing",
+            "score_modifier": -20,
+            "title": "Redirection"
+          },
+          {
+            "id": "referrer-policy",
+            "pass": null,
+            "result": "referrer-policy-not-implemented",
+            "score_modifier": 0,
+            "title": "Referrer Policy"
+          },
+          {
+            "id": "strict-transport-security",
+            "pass": false,
+            "result": "hsts-not-implemented",
+            "score_modifier": -20,
+            "title": "Strict Transport Security (HSTS)"
+          },
+          {
+            "id": "subresource-integrity",
+            "pass": null,
+            "result": "sri-not-implemented-but-all-scripts-loaded-from-secure-origin",
+            "score_modifier": 0,
+            "title": "Subresource Integrity"
+          },
+          {
+            "id": "x-content-type-options",
+            "pass": false,
+            "result": "x-content-type-options-not-implemented",
+            "score_modifier": -5,
+            "title": "X-Content-Type-Options"
+          },
+          {
+            "id": "x-frame-options",
+            "pass": false,
+            "result": "x-frame-options-not-implemented",
+            "score_modifier": -20,
+            "title": "X-Frame-Options"
+          },
+          {
+            "id": "cross-origin-resource-policy",
+            "pass": null,
+            "result": "corp-not-implemented",
+            "score_modifier": 0,
+            "title": "Cross Origin Resource Policy"
+          }
+        ],
+        "tests_failed": 5,
+        "tests_passed": 7,
+        "tests_quantity": 12
+      },
+      "region": "Canada",
+      "tls": {
+        "endpoints": [],
+        "grade": null,
+        "message": "Public-site API use and publication require express Qualys permission plus site-owner permission. A registered SSLLABS_EMAIL secret alone is insufficient.",
+        "state": "permission_required"
+      }
+    },
+    {
+      "group": "government",
+      "host": "www.canada.ca",
+      "name": "Government of Canada",
+      "observatory": {
+        "grade": null,
+        "history": [],
+        "message": "Government assessment requests are disabled after automatic approval review. No cached-only public MDN endpoint was established; no grade is inferred.",
+        "state": "collection_paused",
+        "tests": []
+      },
+      "region": "Federal",
+      "tls": {
+        "endpoints": [],
+        "grade": null,
+        "message": "Public-site API use and publication require express Qualys permission plus site-owner permission. A registered SSLLABS_EMAIL secret alone is insufficient.",
+        "state": "permission_required"
+      }
+    },
+    {
+      "group": "government",
+      "host": "www2.gov.bc.ca",
+      "name": "Government of British Columbia",
+      "observatory": {
+        "grade": null,
+        "history": [],
+        "message": "Government assessment requests are disabled after automatic approval review. No cached-only public MDN endpoint was established; no grade is inferred.",
+        "state": "collection_paused",
+        "tests": []
+      },
+      "region": "British Columbia",
+      "tls": {
+        "endpoints": [],
+        "grade": null,
+        "message": "Public-site API use and publication require express Qualys permission plus site-owner permission. A registered SSLLABS_EMAIL secret alone is insufficient.",
+        "state": "permission_required"
+      }
+    },
+    {
+      "group": "government",
+      "host": "www.ontario.ca",
+      "name": "Government of Ontario",
+      "observatory": {
+        "grade": null,
+        "history": [],
+        "message": "Government assessment requests are disabled after automatic approval review. No cached-only public MDN endpoint was established; no grade is inferred.",
+        "state": "collection_paused",
+        "tests": []
+      },
+      "region": "Ontario",
+      "tls": {
+        "endpoints": [],
+        "grade": null,
+        "message": "Public-site API use and publication require express Qualys permission plus site-owner permission. A registered SSLLABS_EMAIL secret alone is insufficient.",
+        "state": "permission_required"
+      }
+    },
+    {
+      "group": "government",
+      "host": "www.quebec.ca",
+      "name": "Gouvernement du Québec",
+      "observatory": {
+        "grade": null,
+        "history": [],
+        "message": "Government assessment requests are disabled after automatic approval review. No cached-only public MDN endpoint was established; no grade is inferred.",
+        "state": "collection_paused",
+        "tests": []
+      },
+      "region": "Quebec",
+      "tls": {
+        "endpoints": [],
+        "grade": null,
+        "message": "Public-site API use and publication require express Qualys permission plus site-owner permission. A registered SSLLABS_EMAIL secret alone is insufficient.",
+        "state": "permission_required"
+      }
+    },
+    {
+      "group": "government",
+      "host": "www.alberta.ca",
+      "name": "Government of Alberta",
+      "observatory": {
+        "grade": null,
+        "history": [],
+        "message": "Government assessment requests are disabled after automatic approval review. No cached-only public MDN endpoint was established; no grade is inferred.",
+        "state": "collection_paused",
+        "tests": []
+      },
+      "region": "Alberta",
+      "tls": {
+        "endpoints": [],
+        "grade": null,
+        "message": "Public-site API use and publication require express Qualys permission plus site-owner permission. A registered SSLLABS_EMAIL secret alone is insufficient.",
+        "state": "permission_required"
+      }
+    }
+  ],
+  "sources": [
+    {
+      "archive_path": "raw/b2d3c53c59fe855d4b9de577f5fd624fad445dc7c242cb4476a19225c2e7433f.json",
+      "content_type": "application/json; charset=utf-8",
+      "etag": null,
+      "http_status": 200,
+      "last_modified": null,
+      "retrieved_at": "2026-11-22T14:59:43Z",
+      "sha256": "b2d3c53c59fe855d4b9de577f5fd624fad445dc7c242cb4476a19225c2e7433f",
+      "url": "https://observatory-api.mdn.mozilla.net/api/v2/analyze?host=coolcode.ca"
+    }
+  ],
+  "ssl_labs_messages": []
+}

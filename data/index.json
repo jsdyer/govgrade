@@ -1,0 +1,52 @@
+{
+  "available_count": 1,
+  "capture_count": 1,
+  "captured_at": "2026-11-22T14:59:44Z",
+  "coverage": "One enabled owned reference, five selected government sites paused; TLS requires documented provider/publication permission.",
+  "history_url": "./manifest.json",
+  "latest": "history/2026-11-22T145944Z.json",
+  "record_count": 6,
+  "schema_version": 1,
+  "sites": [
+    {
+      "grade": "F",
+      "host": "coolcode.ca",
+      "observatory_state": "ready",
+      "tls_state": "permission_required"
+    },
+    {
+      "grade": null,
+      "host": "www.canada.ca",
+      "observatory_state": "collection_paused",
+      "tls_state": "permission_required"
+    },
+    {
+      "grade": null,
+      "host": "www2.gov.bc.ca",
+      "observatory_state": "collection_paused",
+      "tls_state": "permission_required"
+    },
+    {
+      "grade": null,
+      "host": "www.ontario.ca",
+      "observatory_state": "collection_paused",
+      "tls_state": "permission_required"
+    },
+    {
+      "grade": null,
+      "host": "www.quebec.ca",
+      "observatory_state": "collection_paused",
+      "tls_state": "permission_required"
+    },
+    {
+      "grade": null,
+      "host": "www.alberta.ca",
+      "observatory_state": "collection_paused",
+      "tls_state": "permission_required"
+    }
+  ],
+  "source": "MDN Observatory; permission-gated SSL Labs API v4",
+  "status": "partial",
+  "title": "Gov Grade",
+  "tool": "govgrade"
+}
