@@ -1,7 +1,7 @@
 {
   "id": "govgrade",
   "title": "Gov Grade",
-  "description": "Compare dated security-header and TLS provider reports for selected Canadian websites.",
+  "description": "Compare dated security assessments and locally imported reports.",
   "category": "security",
   "tags": [
     "canada",
@@ -16,6 +16,6 @@
   "access": "browser",
   "data_info": {
     "mode": "snapshot",
-    "detail": "Dated MDN Observatory provider assessments; SSL Labs results require documented provider and owner permission."
+    "detail": "One owned-site MDN reference; government collection is paused and SSL Labs remains permission-gated."
   }
 }
