@@ -1,9 +1,28 @@
-name: Personal TLS · Check CoolCode
+name: Personal TLS · Check an owned site
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths: ['.github/workflows/personal-tls.yml']
+    inputs:
+      host:
+        description: Your owned website to assess at SSL Labs
+        type: choice
+        options:
+          - coolcode.ca
+          - jsdyer.github.io
+          - liminalhacker.com
+          - slashaccess.com
+          - jsdtechnologies.ca
+          - jsd.technology
+          - jeffreydyer.ca
+          - nethush.com
+          - interweb.international
+          - funapps.ca
+          - hackme.ca
+          - superapp.ca
+        default: coolcode.ca
+      custom_host:
+        description: Optional hostname from config/sites.json; overrides the selection
+        type: string
+        default: ''
 permissions:
   contents: read
 concurrency:
@@ -20,7 +39,8 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
-      - name: Assess operator-owned CoolCode and link to provider report
+      - name: Assess the selected owned site and link to provider report
         env:
+          TARGET_HOST: ${{ inputs.custom_host || inputs.host || 'coolcode.ca' }}
           SSLLABS_EMAIL: ${{ secrets.SSLLABS_EMAIL }}
-        run: python3 -u scripts/ssl_personal.py --links-only --wait-seconds 60
+        run: python3 -u scripts/ssl_personal.py --host "$TARGET_HOST" --links-only --wait-seconds 60

@@ -13,6 +13,7 @@ class QuietHandler(SimpleHTTPRequestHandler):
 
 def main():
     shots=ROOT/'browser-checks';shots.mkdir(exist_ok=True)
+    manifest=json.loads((ROOT/'data/manifest.json').read_text());capture=json.loads((ROOT/'data'/manifest['captures'][-1]['path']).read_text());site_count=len(capture['sites']);available_count=sum(s['observatory']['state']=='ready' for s in capture['sites'])
     with tempfile.TemporaryDirectory() as temp:
         shutil.copytree(ROOT/'dist',Path(temp)/ROOT.name)
         server=ThreadingHTTPServer(('127.0.0.1',0),partial(QuietHandler,directory=temp))
@@ -24,12 +25,14 @@ def main():
                 errors=[];page.on('pageerror',lambda error:errors.append(str(error)))
                 page.goto(f'http://127.0.0.1:{server.server_port}/{ROOT.name}/')
                 page.locator('#edition').filter(has_text='Captured').wait_for()
-                assert page.locator('#sites button').count()==1
+                assert page.locator('#sites button').count()==available_count
                 assert page.locator('a[href*=personal-tls]').count()>=1
                 page.locator('#coverage').select_option('all')
-                assert page.locator('#sites button').count()==6
+                assert page.locator('#sites button').count()==site_count
                 assert 'CoolCode' in page.locator('#detail').inner_text()
                 assert 'MDN Observatory' in page.locator('#detail').inner_text()
+                assert 'separate from the TLS grade' in page.locator('#detail').inner_text()
+                page.locator('#owned-sites').filter(has_text='hackme.ca').wait_for()
                 assert page.locator('#detail tbody tr').count()>0
                 page.locator('#sites button').filter(has_text='Government of Canada').click()
                 assert 'Collection paused' in page.locator('#detail').inner_text()
@@ -39,7 +42,7 @@ def main():
                 assert page.locator('img').count()==0
                 page.locator('#search').fill('')
                 page.locator('#coverage').select_option('available')
-                assert page.locator('#sites button').count()==1
+                assert page.locator('#sites button').count()==available_count
                 with page.expect_download() as event: page.locator('#export').click()
                 assert event.value.suggested_filename=='govgrade-reports.csv'
                 page.locator('summary').filter(has_text='Compare a report').click()

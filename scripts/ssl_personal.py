@@ -2,6 +2,7 @@
 import argparse,json,os,time,urllib.request,urllib.error
 from pathlib import Path
 from urllib.parse import urlencode
+from targets import owned_hosts
 BASE='https://api.ssllabs.com/api/v4/'
 TERMS='https://www.ssllabs.com/downloads/Qualys_SSL_Labs_Terms_of_Use.pdf'
 
@@ -13,7 +14,7 @@ def call(path,email):
     except (OSError,ValueError):raise RuntimeError('SSL Labs unavailable or returned invalid JSON. Try again later.') from None
 
 def check_host(host):
-    if host!='coolcode.ca':raise ValueError('This personal workflow is authorized only for coolcode.ca')
+    if host not in owned_hosts():raise ValueError('Choose an authorized owned hostname from config/sites.json')
     return host
 
 def report_summary(host,state):

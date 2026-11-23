@@ -69,6 +69,10 @@ def build(root=ROOT):
         stage = Path(temporary) / "site"
         shutil.copytree(web, stage)
         shutil.copytree(root / "data", stage / "data")
+        if (root/'config/sites.json').exists():
+            from targets import read_config
+            owned=[{k:s[k] for k in ('host','name')} for s in read_config(root)['sites'] if s['group']=='owned' and s.get('owner_permission')]
+            (stage/'data/settings.json').write_text(json.dumps({'owned_sites':owned},indent=2)+'\n')
         index = stage / "index.html"
         page = index.read_text(encoding="utf-8")
         for token, key in {"TITLE": "title", "DESCRIPTION": "description", "TOOL_ID": "id", "SOURCE_URL": "source"}.items():

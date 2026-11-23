@@ -27,15 +27,24 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          persist-credentials: ${{ github.event_name == 'schedule' || inputs.refresh == true }}
+          persist-credentials: false
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
       - uses: actions/setup-node@v6
         with:
           node-version: '24'
+      - name: Select collection mode
+        id: mode
+        env:
+          EVENT: ${{ github.event_name }}
+          REFRESH: ${{ inputs.refresh }}
+        run: |
+          refresh=false
+          if [ "$EVENT" != pull_request ] && { [ "$EVENT" = schedule ] || [ "$REFRESH" = true ] || python3 scripts/collect.py --needs-refresh; }; then refresh=true; fi
+          echo "refresh=$refresh" >> "$GITHUB_OUTPUT"
       - name: Refresh immutable source captures
-        if: github.event_name == 'schedule' || inputs.refresh == true
+        if: steps.mode.outputs.refresh == 'true'
         env:
           SSLLABS_EMAIL: ${{ secrets.SSLLABS_EMAIL }}
         run: python3 scripts/collect.py
@@ -71,14 +80,17 @@ jobs:
           path: browser-checks/
           retention-days: 7
       - name: Commit validated capture history
-        if: (github.event_name == 'schedule' || inputs.refresh == true) && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        if: steps.mode.outputs.refresh == 'true' && github.ref == 'refs/heads/main'
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add data
           if ! git diff --cached --quiet; then
             git commit -m 'data: capture validated source observations'
-            git push
+            gh auth setup-git
+            git push origin HEAD:main
           fi
       - name: Save reviewable site
         uses: actions/upload-artifact@v4

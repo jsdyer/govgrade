@@ -6,6 +6,9 @@ import ssl_personal
 class PersonalTests(unittest.TestCase):
  def test_target_is_owned(self):
   self.assertEqual(ssl_personal.check_host('coolcode.ca'),'coolcode.ca')
+  self.assertEqual(ssl_personal.check_host('hackme.ca'),'hackme.ca')
+  for host in ['https://hackme.ca/','hackme.ca.evil.example','127.0.0.1','localhost']:
+   with self.assertRaises(ValueError):ssl_personal.check_host(host)
   with self.assertRaises(ValueError):ssl_personal.check_host('www.canada.ca')
  def test_info_precedes_scan_and_ci_summary_contains_no_api_payload(self):
   with tempfile.TemporaryDirectory() as d:

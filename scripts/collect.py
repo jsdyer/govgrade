@@ -7,6 +7,7 @@ import re
 import time
 from urllib.parse import urlencode
 from archive import fetch, manifest, save, timestamp, utcnow
+from targets import read_config, config_hash, needs_refresh
 
 ROOT=Path(__file__).resolve().parents[1]
 OBS='https://observatory-api.mdn.mozilla.net/api/v2/analyze'
@@ -57,7 +58,7 @@ def normalize_ssl(data):
     return result
 
 def collect(root=ROOT):
-    config=json.loads((root/'config/sites.json').read_text());manifest(root)
+    config=read_config(root);manifest(root)
     rows=[];sources=[];enabled=0;success=0
     email=os.environ.get('SSLLABS_EMAIL','').strip()
     ssl_info=None
@@ -74,9 +75,12 @@ def collect(root=ROOT):
             if site['group']!='owned' or not site.get('owner_permission'):
                 raise ValueError('Government assessments remain disabled; review scope before enabling')
             enabled+=1
-            raw,meta=fetch(OBS+'?'+urlencode({'host':host}),'govgrade')
-            row['observatory']=normalize_observatory(json.loads(raw));row['observatory']['retrieved_at']=meta['retrieved_at'];row['observatory']['raw_sha256']=meta['sha256']
-            sources.append((raw,'json',meta));success+=1
+            try:
+                raw,meta=fetch(OBS+'?'+urlencode({'host':host}),'govgrade')
+                row['observatory']=normalize_observatory(json.loads(raw));row['observatory']['retrieved_at']=meta['retrieved_at'];row['observatory']['raw_sha256']=meta['sha256']
+                sources.append((raw,'json',meta));success+=row['observatory']['state']=='ready'
+            except (OSError,ValueError):
+                row['observatory']={'state':'fetch_failed','grade':None,'message':'No valid report was received on this attempt. Previous reports remain in earlier dated captures.','tests':[],'history':[]}
             time.sleep(1)
         row['tls']={'state':'permission_required','grade':None,'endpoints':[],
                     'message':'Public-site API use and publication require express Qualys permission plus site-owner permission. A registered SSLLABS_EMAIL secret alone is insufficient.'}
@@ -91,12 +95,15 @@ def collect(root=ROOT):
         rows.append(row)
     if enabled and not success: raise ValueError('All enabled provider requests failed')
     capture={'schema_version':1,'captured_at':utcnow(),'sites':rows,'ssl_labs_messages':(ssl_info or {}).get('messages',[])}
-    summary={'tool':'govgrade','title':'Gov Grade','status':'partial','record_count':len(rows),'available_count':sum(r['observatory']['state']=='ready' for r in rows),
-             'source':'MDN Observatory; permission-gated SSL Labs API v4','coverage':'One enabled owned reference, five selected government sites paused; TLS requires documented provider/publication permission.',
+    paused=sum(not s.get('observatory_enabled') for s in config['sites'])
+    summary={'tool':'govgrade','title':'Gov Grade','status':'partial' if success<len(rows) else 'ready','record_count':len(rows),'available_count':sum(r['observatory']['state']=='ready' for r in rows),
+             'config_sha256':config_hash(root),'source':'MDN Observatory; owner-run SSL Labs checks link to provider reports','coverage':f'{enabled} owned sites enabled, {success} reports available in this capture, {paused} selected sites paused. TLS reports remain at SSL Labs.',
              'sites':[{'host':r['host'],'observatory_state':r['observatory']['state'],'grade':r['observatory'].get('grade'),'tls_state':r['tls']['state']} for r in rows]}
     save(root,capture,sources,summary)
     print(f'Saved {len(rows)} selected sites / {summary["available_count"]} MDN report(s)')
 
 if __name__=='__main__':
+    import sys
+    if '--needs-refresh' in sys.argv:raise SystemExit(0 if needs_refresh() else 1)
     try: collect()
     except Exception as exc: raise SystemExit('Collection failed; previous published data retained: '+str(exc))

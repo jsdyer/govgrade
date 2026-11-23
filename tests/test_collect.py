@@ -5,9 +5,12 @@ import shutil
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
 from archive import manifest
 from collect import ROOT, normalize_observatory, normalize_ssl, ssl_allowed
+import collect
+from archive import digest,utcnow
 
 class ProviderTests(unittest.TestCase):
     def setUp(self):
@@ -40,3 +43,15 @@ class ProviderTests(unittest.TestCase):
             root=Path(temp);shutil.copytree(ROOT/'data',root/'data');m=manifest(root)
             path=root/'data'/m['captures'][0]['path'];path.write_text(path.read_text()+' ')
             with self.assertRaisesRegex(ValueError,'hash mismatch'):manifest(root)
+    def test_one_failed_source_keeps_other_reports_without_inventing_a_grade(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp);(root/'config').mkdir()
+            sites=[{'host':h,'name':h,'region':'Canada','group':'owned','owner_permission':'Owner authorized','observatory_enabled':True,'ssl_labs_enabled':False}for h in ['one.example','two.example']]
+            (root/'config/sites.json').write_text(json.dumps({'sites':sites}))
+            raw=json.dumps(self.report).encode();meta={'sha256':digest(raw),'retrieved_at':utcnow(),'url':'https://provider.example/report'}
+            with patch.object(collect,'fetch',side_effect=[(raw,meta),OSError('Unavailable')]),patch.object(collect.time,'sleep'),patch.object(collect,'save') as save:
+                collect.collect(root)
+            capture=save.call_args.args[1];summary=save.call_args.args[3]
+            self.assertEqual(summary['available_count'],1);self.assertEqual(summary['status'],'partial')
+            self.assertEqual(capture['sites'][0]['observatory']['grade'],'F')
+            self.assertEqual(capture['sites'][1]['observatory']['state'],'fetch_failed');self.assertIsNone(capture['sites'][1]['observatory']['grade'])

@@ -2,11 +2,175 @@
   "ssl_labs_publication_permission": null,
   "ssl_labs_permission_note": "Qualys express permission for public-site API use and publication is required before enabling TLS collection.",
   "sites": [
-    {"host":"coolcode.ca","name":"CoolCode","region":"Canada","group":"owned","observatory_enabled":true,"owner_permission":"Operator-owned site; assessment authorized in this project request.","ssl_labs_enabled":false,"publication_permission":null},
-    {"host":"www.canada.ca","name":"Government of Canada","region":"Federal","group":"government","observatory_enabled":false,"owner_permission":null,"ssl_labs_enabled":false,"publication_permission":null},
-    {"host":"www2.gov.bc.ca","name":"Government of British Columbia","region":"British Columbia","group":"government","observatory_enabled":false,"owner_permission":null,"ssl_labs_enabled":false,"publication_permission":null},
-    {"host":"www.ontario.ca","name":"Government of Ontario","region":"Ontario","group":"government","observatory_enabled":false,"owner_permission":null,"ssl_labs_enabled":false,"publication_permission":null},
-    {"host":"www.quebec.ca","name":"Gouvernement du Québec","region":"Quebec","group":"government","observatory_enabled":false,"owner_permission":null,"ssl_labs_enabled":false,"publication_permission":null},
-    {"host":"www.alberta.ca","name":"Government of Alberta","region":"Alberta","group":"government","observatory_enabled":false,"owner_permission":null,"ssl_labs_enabled":false,"publication_permission":null}
+    {
+      "host": "coolcode.ca",
+      "name": "CoolCode",
+      "region": "Canada",
+      "group": "owned",
+      "observatory_enabled": true,
+      "owner_permission": "User explicitly authorized this owned site for assessments on 2026-11-22.",
+      "ssl_labs_enabled": false,
+      "publication_permission": null
+    },
+    {
+      "host": "jsdyer.github.io",
+      "name": "GitHub Pages",
+      "region": "Canada",
+      "group": "owned",
+      "observatory_enabled": true,
+      "owner_permission": "User explicitly authorized this owned site for assessments on 2026-11-22.",
+      "ssl_labs_enabled": false,
+      "publication_permission": null
+    },
+    {
+      "host": "liminalhacker.com",
+      "name": "Liminal Hacker",
+      "region": "Canada",
+      "group": "owned",
+      "observatory_enabled": true,
+      "owner_permission": "User explicitly authorized this owned site for assessments on 2026-11-22.",
+      "ssl_labs_enabled": false,
+      "publication_permission": null
+    },
+    {
+      "host": "slashaccess.com",
+      "name": "Slash Access",
+      "region": "Canada",
+      "group": "owned",
+      "observatory_enabled": true,
+      "owner_permission": "User explicitly authorized this owned site for assessments on 2026-11-22.",
+      "ssl_labs_enabled": false,
+      "publication_permission": null
+    },
+    {
+      "host": "jsdtechnologies.ca",
+      "name": "JSD Technologies",
+      "region": "Canada",
+      "group": "owned",
+      "observatory_enabled": true,
+      "owner_permission": "User explicitly authorized this owned site for assessments on 2026-11-22.",
+      "ssl_labs_enabled": false,
+      "publication_permission": null
+    },
+    {
+      "host": "jsd.technology",
+      "name": "JSD Technology",
+      "region": "Canada",
+      "group": "owned",
+      "observatory_enabled": true,
+      "owner_permission": "User explicitly authorized this owned site for assessments on 2026-11-22.",
+      "ssl_labs_enabled": false,
+      "publication_permission": null
+    },
+    {
+      "host": "jeffreydyer.ca",
+      "name": "Jeffrey Dyer",
+      "region": "Canada",
+      "group": "owned",
+      "observatory_enabled": true,
+      "owner_permission": "User explicitly authorized this owned site for assessments on 2026-11-22.",
+      "ssl_labs_enabled": false,
+      "publication_permission": null
+    },
+    {
+      "host": "nethush.com",
+      "name": "NetHush",
+      "region": "Canada",
+      "group": "owned",
+      "observatory_enabled": true,
+      "owner_permission": "User explicitly authorized this owned site for assessments on 2026-11-22.",
+      "ssl_labs_enabled": false,
+      "publication_permission": null
+    },
+    {
+      "host": "interweb.international",
+      "name": "Interweb International",
+      "region": "Canada",
+      "group": "owned",
+      "observatory_enabled": true,
+      "owner_permission": "User explicitly authorized this owned site for assessments on 2026-11-22.",
+      "ssl_labs_enabled": false,
+      "publication_permission": null
+    },
+    {
+      "host": "funapps.ca",
+      "name": "FunApps",
+      "region": "Canada",
+      "group": "owned",
+      "observatory_enabled": true,
+      "owner_permission": "User explicitly authorized this owned site for assessments on 2026-11-22.",
+      "ssl_labs_enabled": false,
+      "publication_permission": null
+    },
+    {
+      "host": "hackme.ca",
+      "name": "HackMe",
+      "region": "Canada",
+      "group": "owned",
+      "observatory_enabled": true,
+      "owner_permission": "User explicitly authorized this owned site for assessments on 2026-11-22.",
+      "ssl_labs_enabled": false,
+      "publication_permission": null
+    },
+    {
+      "host": "superapp.ca",
+      "name": "SuperApp",
+      "region": "Canada",
+      "group": "owned",
+      "observatory_enabled": true,
+      "owner_permission": "User explicitly authorized this owned site for assessments on 2026-11-22.",
+      "ssl_labs_enabled": false,
+      "publication_permission": null
+    },
+    {
+      "host": "www.canada.ca",
+      "name": "Government of Canada",
+      "region": "Federal",
+      "group": "government",
+      "observatory_enabled": false,
+      "owner_permission": null,
+      "ssl_labs_enabled": false,
+      "publication_permission": null
+    },
+    {
+      "host": "www2.gov.bc.ca",
+      "name": "Government of British Columbia",
+      "region": "British Columbia",
+      "group": "government",
+      "observatory_enabled": false,
+      "owner_permission": null,
+      "ssl_labs_enabled": false,
+      "publication_permission": null
+    },
+    {
+      "host": "www.ontario.ca",
+      "name": "Government of Ontario",
+      "region": "Ontario",
+      "group": "government",
+      "observatory_enabled": false,
+      "owner_permission": null,
+      "ssl_labs_enabled": false,
+      "publication_permission": null
+    },
+    {
+      "host": "www.quebec.ca",
+      "name": "Gouvernement du Qu\u00e9bec",
+      "region": "Quebec",
+      "group": "government",
+      "observatory_enabled": false,
+      "owner_permission": null,
+      "ssl_labs_enabled": false,
+      "publication_permission": null
+    },
+    {
+      "host": "www.alberta.ca",
+      "name": "Government of Alberta",
+      "region": "Alberta",
+      "group": "government",
+      "observatory_enabled": false,
+      "owner_permission": null,
+      "ssl_labs_enabled": false,
+      "publication_permission": null
+    }
   ]
 }
