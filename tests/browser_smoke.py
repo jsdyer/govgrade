@@ -32,7 +32,7 @@ def main():
                 assert 'CoolCode' in page.locator('#detail').inner_text()
                 assert 'MDN Observatory' in page.locator('#detail').inner_text()
                 assert 'separate from the TLS grade' in page.locator('#detail').inner_text()
-                page.locator('#owned-sites').filter(has_text='hackme.ca').wait_for()
+                page.locator('#owned-sites').filter(has_text='hackme.ca').wait_for(state='attached')
                 assert page.locator('#detail tbody tr').count()>0
                 page.locator('#sites button').filter(has_text='Government of Canada').click()
                 assert 'Collection paused' in page.locator('#detail').inner_text()
