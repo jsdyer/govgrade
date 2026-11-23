@@ -16,6 +16,7 @@
   "access": "browser",
   "data_info": {
     "mode": "snapshot",
-    "detail": "Dated MDN header reports for twelve owned sites, local comparisons and personal SSL Labs checks; government rows are coverage notes."
+    "detail": "Dated MDN header reports for twelve owned sites, local comparisons and personal SSL Labs checks; government rows are coverage notes.",
+    "cadence": "Weekly"
   }
 }
