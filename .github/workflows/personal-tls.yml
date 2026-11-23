@@ -1,0 +1,26 @@
+name: Personal TLS · Check CoolCode
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/personal-tls.yml']
+permissions:
+  contents: read
+concurrency:
+  group: personal-tls
+  cancel-in-progress: false
+jobs:
+  tls:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Assess operator-owned CoolCode and link to provider report
+        env:
+          SSLLABS_EMAIL: ${{ secrets.SSLLABS_EMAIL }}
+        run: python3 scripts/ssl_personal.py --links-only

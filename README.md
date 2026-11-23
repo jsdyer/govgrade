@@ -3,7 +3,7 @@
 A static, dated evidence viewer for security-header and TLS provider assessments of selected Canadian websites. Works at `https://coolcode.ca/govgrade/`. Browser controls operate on versioned JSON; they never submit scans.
 
 <!-- coolcode:guide -->
-Start with the operator-owned CoolCode reference, inspect the provider's individual header findings, and export a dated CSV. The five government sites are explicitly ungraded because their automated collection is paused. Import an existing MDN `/analyze` JSON report for a tab-only, unverified-host comparison. Assessment dates differ from capture dates; provider grades are never combined into a security score.
+Inspect the saved CoolCode header report and individual MDN findings. The owner can run Personal TLS · Check CoolCode in GitHub Actions using SSLLABS_EMAIL, then open the provider report from the run Summary. Existing MDN JSON imports stay in this tab for comparison. Available reports are shown first; uncollected government targets appear only when explicitly viewing coverage notes.
 <!-- /coolcode:guide -->
 
 ## Actual coverage and limitations
@@ -25,9 +25,15 @@ The [official GET implementation](https://github.com/mdn/mdn-http-observatory/bl
 
 The adapter reads **SSLLABS_EMAIL** only from the collector environment / repository Actions secret. It never embeds or logs that value, and its request headers are not archived. The [v4 documentation](https://github.com/ssllabs/ssllabs-scan/blob/master/ssllabs-api-docs-v4.md) specifies the `email` request header. Registration alone does not authorize this public site to collect or publish third-party reports.
 
-The [Qualys terms v2.2](https://www.ssllabs.com/downloads/Qualys_SSL_Labs_Terms_of_Use.pdf), API licence restrictions, require site-owner scanning permission and express Qualys permission for public-site API use; publication requires the owner's express permission. `fromCache=on` is **not cache-only** and can initiate an assessment on a miss. Consequently all TLS rows are `permission_required`, including the owned reference. No SSL Labs analyze calls have been made.
+The [Qualys terms v2.2](https://www.ssllabs.com/downloads/Qualys_SSL_Labs_Terms_of_Use.pdf), API licence restrictions, require site-owner scanning permission and express Qualys permission for public-site API use; publication requires the owner's express permission. `fromCache=on` is **not cache-only** and can initiate an assessment on a miss. Public API report republication remains separate from personal use. The owner-only client below assesses the authorized CoolCode site and links to the provider report; it does not copy the API report into the public application.
 
 To enable a reviewed target after actual permissions exist, record the provider permission reference in `config/sites.json` as `ssl_labs_publication_permission`, its site-owner authorization as `owner_permission`, its publication authorization as `publication_permission`, set `ssl_labs_enabled` true, and supply the registered secret. The collector first obtains `/info`, prints all provider messages, then makes at most one `/analyze?host=…&fromCache=on&all=done` call per authorized target. It preserves READY/ERROR/DNS/IN_PROGRESS states and all endpoint grades without inventing a global TLS grade. It does not poll or force new scans. The public app has no live API proxy. Qualified use is subject to the provider's permission terms, not this software's MIT licence.
+
+## Run your personal TLS check now
+
+Open [Personal TLS · Check CoolCode](https://github.com/jsdyer/govgrade/actions/workflows/personal-tls.yml), choose **Run workflow**, and open the completed run **Summary**. The registered `SSLLABS_EMAIL` secret is used only in API headers. The workflow assesses only `coolcode.ca`, prints the required provider notices before assessment, polls at 20-second intervals, and returns the official SSL Labs report link. It does not commit API reports or publish endpoint grades on the app. Only users with repository workflow permissions can invoke it. The initial installation or an edit to this workflow verifies the owned site once; there is no scheduled personal TLS scan.
+
+For local personal noncommercial use, clone this MIT-licensed repository, set `SSLLABS_EMAIL` in your environment, then run `python3 scripts/ssl_personal.py`. The local client prints the full JSON report after completion. `--links-only` suppresses that JSON, as used in CI. SSL Labs performs the remote assessment; only owned/authorized infrastructure is in scope. Its terms and `/info` messages are printed before the request. A cached report up to 24 hours old may be reused. The public page is not an API proxy; visitors can use the SSL Labs website directly for their own sites.
 
 ## Data lifecycle
 

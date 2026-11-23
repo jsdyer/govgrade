@@ -24,13 +24,16 @@ def main():
                 errors=[];page.on('pageerror',lambda error:errors.append(str(error)))
                 page.goto(f'http://127.0.0.1:{server.server_port}/{ROOT.name}/')
                 page.locator('#edition').filter(has_text='Captured').wait_for()
+                assert page.locator('#sites button').count()==1
+                assert page.locator('a[href*=personal-tls]').count()>=1
+                page.locator('#coverage').select_option('all')
                 assert page.locator('#sites button').count()==6
                 assert 'CoolCode' in page.locator('#detail').inner_text()
                 assert 'MDN Observatory' in page.locator('#detail').inner_text()
                 assert page.locator('#detail tbody tr').count()>0
                 page.locator('#sites button').filter(has_text='Government of Canada').click()
                 assert 'Collection paused' in page.locator('#detail').inner_text()
-                assert 'Permission required' in page.locator('#detail').inner_text()
+                assert 'not included in the personal checker' in page.locator('#detail').inner_text()
                 page.locator('#search').fill('<img src=x onerror=alert(1)>')
                 assert page.locator('#sites button').count()==0
                 assert page.locator('img').count()==0
