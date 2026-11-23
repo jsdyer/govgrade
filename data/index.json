@@ -1,16 +1,83 @@
 {
-  "available_count": 1,
-  "capture_count": 1,
-  "captured_at": "2026-11-22T14:59:44Z",
-  "coverage": "One enabled owned reference, five selected government sites paused; TLS requires documented provider/publication permission.",
+  "available_count": 10,
+  "capture_count": 2,
+  "captured_at": "2026-11-23T00:55:54Z",
+  "config_sha256": "29126d98ccbad59b79bf900d4066d1fd017e800911bfbb526b24501e760bfa2c",
+  "coverage": "12 owned sites enabled, 10 reports available in this capture, 5 selected sites paused. TLS reports remain at SSL Labs.",
   "history_url": "./manifest.json",
-  "latest": "history/2026-11-22T145944Z.json",
-  "record_count": 6,
+  "latest": "history/2026-11-23T005554Z.json",
+  "record_count": 17,
   "schema_version": 1,
   "sites": [
     {
       "grade": "F",
       "host": "coolcode.ca",
+      "observatory_state": "ready",
+      "tls_state": "permission_required"
+    },
+    {
+      "grade": "F",
+      "host": "jsdyer.github.io",
+      "observatory_state": "ready",
+      "tls_state": "permission_required"
+    },
+    {
+      "grade": "D+",
+      "host": "liminalhacker.com",
+      "observatory_state": "ready",
+      "tls_state": "permission_required"
+    },
+    {
+      "grade": "D+",
+      "host": "slashaccess.com",
+      "observatory_state": "ready",
+      "tls_state": "permission_required"
+    },
+    {
+      "grade": null,
+      "host": "jsdtechnologies.ca",
+      "observatory_state": "fetch_failed",
+      "tls_state": "permission_required"
+    },
+    {
+      "grade": null,
+      "host": "jsd.technology",
+      "observatory_state": "fetch_failed",
+      "tls_state": "permission_required"
+    },
+    {
+      "grade": "D",
+      "host": "jeffreydyer.ca",
+      "observatory_state": "ready",
+      "tls_state": "permission_required"
+    },
+    {
+      "grade": "F",
+      "host": "nethush.com",
+      "observatory_state": "ready",
+      "tls_state": "permission_required"
+    },
+    {
+      "grade": "A+",
+      "host": "interweb.international",
+      "observatory_state": "ready",
+      "tls_state": "permission_required"
+    },
+    {
+      "grade": "F",
+      "host": "funapps.ca",
+      "observatory_state": "ready",
+      "tls_state": "permission_required"
+    },
+    {
+      "grade": "F",
+      "host": "hackme.ca",
+      "observatory_state": "ready",
+      "tls_state": "permission_required"
+    },
+    {
+      "grade": "F",
+      "host": "superapp.ca",
       "observatory_state": "ready",
       "tls_state": "permission_required"
     },
@@ -45,7 +112,7 @@
       "tls_state": "permission_required"
     }
   ],
-  "source": "MDN Observatory; permission-gated SSL Labs API v4",
+  "source": "MDN Observatory; owner-run SSL Labs checks link to provider reports",
   "status": "partial",
   "title": "Gov Grade",
   "tool": "govgrade"
