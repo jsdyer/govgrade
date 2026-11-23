@@ -15,3 +15,12 @@ class PersonalTests(unittest.TestCase):
    self.assertEqual(request.call_args_list[0].args[0],'info')
    self.assertIn('host=coolcode.ca',request.call_args_list[1].args[0]);self.assertNotIn('startNew',request.call_args_list[1].args[0])
    text=summary.read_text();self.assertIn('ssllabs.com/ssltest/',text);self.assertNotIn('PRIVATE_REPORT',text);self.assertNotIn('private@example.org',text)
+ def test_pending_assessment_returns_link_without_claiming_completion(self):
+  with tempfile.TemporaryDirectory() as d:
+   summary=Path(d)/'summary.md'
+   with patch.dict('os.environ',{'SSLLABS_EMAIL':'private@example.org','GITHUB_STEP_SUMMARY':str(summary)}),patch.object(ssl_personal,'call',side_effect=[{'engineVersion':'test'},{'status':'IN_PROGRESS'}]),patch.object(ssl_personal.time,'monotonic',side_effect=[0,61]):
+    state=ssl_personal.run('coolcode.ca',True,60)
+   self.assertEqual(state,'IN_PROGRESS');text=summary.read_text();self.assertIn('still processing',text);self.assertIn('ssllabs.com/ssltest/',text);self.assertNotIn('check completed',text)
+ def test_provider_error_remains_failure(self):
+  with patch.dict('os.environ',{'SSLLABS_EMAIL':'private@example.org'}),patch.object(ssl_personal,'call',side_effect=[{'engineVersion':'test'},{'status':'ERROR'}]):
+   with self.assertRaises(RuntimeError):ssl_personal.run('coolcode.ca',True,60)

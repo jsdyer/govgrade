@@ -23,4 +23,4 @@ jobs:
       - name: Assess operator-owned CoolCode and link to provider report
         env:
           SSLLABS_EMAIL: ${{ secrets.SSLLABS_EMAIL }}
-        run: python3 scripts/ssl_personal.py --links-only
+        run: python3 -u scripts/ssl_personal.py --links-only --wait-seconds 60

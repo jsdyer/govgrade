@@ -16,8 +16,17 @@ def check_host(host):
     if host!='coolcode.ca':raise ValueError('This personal workflow is authorized only for coolcode.ca')
     return host
 
-def run(host,links_only=False):
+def report_summary(host,state):
+    link='https://www.ssllabs.com/ssltest/analyze.html?d='+host
+    heading='completed' if state=='READY' else 'accepted — still processing'
+    detail='The report is ready.' if state=='READY' else 'SSL Labs accepted the request but has not finished the assessment. Open the provider link to follow progress; no TLS grade is claimed yet.'
+    text='# Personal TLS check '+heading+'\n\n[Open your SSL Labs report]('+link+')\n\n'+detail+' The registered email was accepted. No API report is committed or republished by this workflow.\n'
+    print(text,flush=True)
+    if os.getenv('GITHUB_STEP_SUMMARY'):Path(os.environ['GITHUB_STEP_SUMMARY']).write_text(text)
+
+def run(host,links_only=False,wait_seconds=600):
     check_host(host)
+    if not 0<=wait_seconds<=600:raise ValueError('Wait must be between 0 and 600 seconds')
     email=os.environ.get('SSLLABS_EMAIL','').strip()
     if not email:raise ValueError('Set SSLLABS_EMAIL to the successfully registered email address')
     print('Terms: '+TERMS)
@@ -26,21 +35,21 @@ def run(host,links_only=False):
     for message in info.get('messages',[]):print('SSL Labs message:',str(message))
     if not info.get('engineVersion'):raise ValueError('Invalid SSL Labs availability response')
     path='analyze?'+urlencode({'host':host,'fromCache':'on','all':'done','maxAge':'24','publish':'off'})
-    deadline=time.monotonic()+600
+    deadline=time.monotonic()+wait_seconds
     while True:
         result=call(path,email)
         if result.get('status')=='READY':break
         if result.get('status')=='ERROR':raise RuntimeError('SSL Labs could not assess this host; inspect its report')
         if result.get('status') not in ('DNS','IN_PROGRESS'):raise ValueError('Unexpected assessment state')
-        if time.monotonic()>=deadline:raise RuntimeError('Assessment still in progress; open the provider report later')
-        print('Assessment in progress; waiting 20 seconds.');time.sleep(20)
-    link='https://www.ssllabs.com/ssltest/analyze.html?d='+host
-    text='# Personal TLS check completed\n\n[Open your SSL Labs report]('+link+')\n\nThe registered email worked. The complete report remains at SSL Labs. No API report is committed or republished by this workflow.\n'
-    print(text)
+        if time.monotonic()>=deadline:
+            report_summary(host,result['status'])
+            return result['status']
+        print('Assessment in progress; waiting 20 seconds.',flush=True);time.sleep(20)
+    report_summary(host,'READY')
     if not links_only:print(json.dumps(result,indent=2))
-    if os.getenv('GITHUB_STEP_SUMMARY'):Path(os.environ['GITHUB_STEP_SUMMARY']).write_text(text)
+    return 'READY'
 
 if __name__=='__main__':
-    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--host',default='coolcode.ca');parser.add_argument('--links-only',action='store_true');args=parser.parse_args()
-    try:run(args.host,args.links_only)
+    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--host',default='coolcode.ca');parser.add_argument('--links-only',action='store_true');parser.add_argument('--wait-seconds',type=int,default=600);args=parser.parse_args()
+    try:run(args.host,args.links_only,args.wait_seconds)
     except Exception as e:raise SystemExit(str(e)) from None
