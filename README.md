@@ -68,3 +68,11 @@ The personal SSL Labs client uses the same owned-host list. Its `custom_host` fi
 ## Why an F can appear beside a TLS B
 
 MDN Observatory grades browser-facing HTTP security controls; SSL Labs grades TLS endpoints. They are independent. The retained CoolCode capture from 2026-11-22 has 10 MDN points: baseline 100, minus CSP 25, redirection 20, HSTS 20, MIME-sniffing protection 5 and framing protection 20. Its F is the provider’s grade for those controls, not proof of compromise. Later captures may differ. The UI shows each recorded point modifier; it never substitutes a TLS grade for an HTTP grade.
+
+<!-- schedule-reliability -->
+## Schedule reliability
+
+Public GitHub repositories can have scheduled workflows disabled after 60 days of inactivity. A separate weekly [schedule guard](.github/workflows/schedule-guard.yml) calls GitHub's enable-workflow API for an explicit list of refresh workflows and itself. It can restore workflows disabled for inactivity, preserves manually disabled workflows, and runs independently of collection failures.
+
+This is an interim mitigation, not a scheduling guarantee: GitHub does not document active-workflow renewal as a permanent exemption, and scheduled runs can be delayed or dropped. A scheduler on our own Linux server is the planned independent trigger. The guard does not collect data, create dummy commits, or change source/check timestamps; successful collection and published data freshness still need monitoring.
+<!-- /schedule-reliability -->
